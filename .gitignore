@@ -10,6 +10,10 @@ __pycache__/
 
 # MLflow
 mlruns/
+mlflow.db
+
+# DVC
+.dvc/cache/
 
 # OS Files
 .DS_Store
