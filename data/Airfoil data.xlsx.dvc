@@ -1,0 +1,5 @@
+outs:
+- md5: 2c03b391b30c83cc1fd48f647a9e40c0
+  size: 16595
+  hash: md5
+  path: Airfoil data.xlsx
