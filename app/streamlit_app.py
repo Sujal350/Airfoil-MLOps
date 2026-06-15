@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import joblib
 import os
-import mlflow
 import matplotlib.pyplot as plt
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
@@ -20,10 +19,17 @@ scaler = joblib.load(os.path.join(BASE_DIR, "models", "lift_scaler.pkl"))
 # -----------------------------
 # MLflow INIT (BACKEND ONLY)
 # -----------------------------
-if "mlflow_init" not in st.session_state:
-    mlflow.set_tracking_uri("sqlite:///mlflow.db")
-    mlflow.set_experiment("Airfoil_Inference_Tracking")
-    st.session_state["mlflow_init"] = True
+try:
+    import mlflow
+    MLFLOW_AVAILABLE = True
+except Exception:
+    MLFLOW_AVAILABLE = False
+
+if MLFLOW_AVAILABLE:
+    if "mlflow_init" not in st.session_state:
+        mlflow.set_tracking_uri("sqlite:///mlflow.db")
+        mlflow.set_experiment("Airfoil_Inference_Tracking")
+        st.session_state["mlflow_init"] = True
 
 # -----------------------------
 # NACA NAME
@@ -229,7 +235,7 @@ with tab2:
 st.sidebar.write("---")
 st.sidebar.subheader("Experiment Logging")
 
-if st.sidebar.button("Log to MLflow"):
+if MLFLOW_AVAILABLE and st.button("📊 Log to MLflow"):
     with mlflow.start_run():
 
         mlflow.log_param("camber", camber)
