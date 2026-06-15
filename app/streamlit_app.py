@@ -19,17 +19,17 @@ scaler = joblib.load(os.path.join(BASE_DIR, "models", "lift_scaler.pkl"))
 # -----------------------------
 # MLflow INIT (BACKEND ONLY)
 # -----------------------------
-try:
-    import mlflow
-    MLFLOW_AVAILABLE = True
-except Exception:
-    MLFLOW_AVAILABLE = False
+# try:
+#     import mlflow
+#     MLFLOW_AVAILABLE = True
+# except Exception:
+#     MLFLOW_AVAILABLE = False
 
-if MLFLOW_AVAILABLE:
-    if "mlflow_init" not in st.session_state:
-        mlflow.set_tracking_uri("sqlite:///mlflow.db")
-        mlflow.set_experiment("Airfoil_Inference_Tracking")
-        st.session_state["mlflow_init"] = True
+# if MLFLOW_AVAILABLE:
+#     if "mlflow_init" not in st.session_state:
+#         mlflow.set_tracking_uri("sqlite:///mlflow.db")
+#         mlflow.set_experiment("Airfoil_Inference_Tracking")
+#         st.session_state["mlflow_init"] = True
 
 # -----------------------------
 # NACA NAME
@@ -232,20 +232,20 @@ with tab2:
 # -----------------------------
 # MLflow LOGGING (BACKEND ONLY)
 # -----------------------------
-st.sidebar.write("---")
-st.sidebar.subheader("Experiment Logging")
+# st.sidebar.write("---")
+# st.sidebar.subheader("Experiment Logging")
 
-if MLFLOW_AVAILABLE and st.button("📊 Log to MLflow"):
-    with mlflow.start_run():
+# if MLFLOW_AVAILABLE and st.button("📊 Log to MLflow"):
+#     with mlflow.start_run():
 
-        mlflow.log_param("camber", camber)
-        mlflow.log_param("camber_pos", camber_pos)
-        mlflow.log_param("thickness", thickness)
-        mlflow.log_param("aoa", aoa)
+#         mlflow.log_param("camber", camber)
+#         mlflow.log_param("camber_pos", camber_pos)
+#         mlflow.log_param("thickness", thickness)
+#         mlflow.log_param("aoa", aoa)
 
-        mlflow.log_metric("lift", float(lift))
-        mlflow.log_metric("drag", float(drag))
-        mlflow.log_metric("cl_cd", float(eff))
+#         mlflow.log_metric("lift", float(lift))
+#         mlflow.log_metric("drag", float(drag))
+#         mlflow.log_metric("cl_cd", float(eff))
 
-    st.sidebar.success("Logged ✔")
+#     st.sidebar.success("Logged ✔")
 
