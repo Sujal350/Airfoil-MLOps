@@ -21,3 +21,7 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+airfoil_report.pdf
+artifacts/
+dvc-storage/
