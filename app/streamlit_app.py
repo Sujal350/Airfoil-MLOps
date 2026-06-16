@@ -1,5 +1,7 @@
 import streamlit as st
 import numpy as np
+import plotly.express as px
+import pandas as pd
 import joblib
 import os
 import matplotlib.pyplot as plt
@@ -177,38 +179,151 @@ with tab1:
 # -----------------------------
 # TAB 2 (ANALYSIS + REPORT)
 # -----------------------------
+
+
+
+
 with tab2:
-    st.subheader("AOA Performance (0–10°)")
 
-    fig, ax = plt.subplots()
-    ax.plot(aoa_range, cl_list)
-    ax.set_title("CL vs AOA")
-    st.pyplot(fig)
+    st.subheader("📈 Aerodynamic Performance Analysis (0–10° AOA)")
 
-    fig, ax = plt.subplots()
-    ax.plot(aoa_range, cd_list, color="red")
-    ax.set_title("CD vs AOA")
-    st.pyplot(fig)
+    # ---------------------------------
+    # Summary Metrics
+    # ---------------------------------
 
-    fig, ax = plt.subplots()
-    ax.plot(aoa_range, eff_list, color="green")
-    ax.set_title("CL/CD vs AOA")
-    st.pyplot(fig)
+    m1, m2, m3 = st.columns(3)
 
-    st.success(f"Best AOA: {best_aoa}°")
+    with m1:
+        st.metric("Lift Coefficient (CL)", f"{lift:.4f}")
 
-    if stall_aoa:
-        st.warning(f"Stall starts at ~{stall_aoa}°")
+    with m2:
+        st.metric("Drag Coefficient (CD)", f"{drag:.4f}")
 
-    # -----------------------------
-    # REPORT SECTION (INSIDE TAB 2)
-    # -----------------------------
+    with m3:
+        st.metric("CL/CD Ratio", f"{eff:.2f}")
+
     st.markdown("---")
-    st.subheader("Generate Engineering Report")
 
-    st.write("Download full aerodynamic report (CL, CD, CL/CD, AOA analysis)")
+    # ---------------------------------
+    # Performance DataFrame
+    # ---------------------------------
 
-    if st.button("Generate PDF Report"):
+    perf_df = pd.DataFrame({
+        "AOA": aoa_range,
+        "CL": cl_list,
+        "CD": cd_list,
+        "CL/CD": eff_list
+    })
+
+    # ---------------------------------
+    # Top Row Graphs
+    # ---------------------------------
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        fig_cl = px.line(
+            perf_df,
+            x="AOA",
+            y="CL",
+            markers=True,
+            title="Lift Coefficient (CL) vs AOA"
+        )
+
+        fig_cl.update_layout(
+            height=350,
+            xaxis_title="Angle of Attack (°)",
+            yaxis_title="CL"
+        )
+
+        st.plotly_chart(
+            fig_cl,
+            use_container_width=True
+        )
+
+    with col2:
+
+        fig_cd = px.line(
+            perf_df,
+            x="AOA",
+            y="CD",
+            markers=True,
+            title="Drag Coefficient (CD) vs AOA"
+        )
+
+        fig_cd.update_layout(
+            height=350,
+            xaxis_title="Angle of Attack (°)",
+            yaxis_title="CD"
+        )
+
+        st.plotly_chart(
+            fig_cd,
+            use_container_width=True
+        )
+
+    # ---------------------------------
+    # CL/CD Graph
+    # ---------------------------------
+
+    fig_eff = px.line(
+        perf_df,
+        x="AOA",
+        y="CL/CD",
+        markers=True,
+        title="Aerodynamic Efficiency (CL/CD) vs AOA"
+    )
+
+    fig_eff.update_layout(
+        height=400,
+        xaxis_title="Angle of Attack (°)",
+        yaxis_title="CL/CD"
+    )
+
+    st.plotly_chart(
+        fig_eff,
+        use_container_width=True
+    )
+
+    # ---------------------------------
+    # Best AOA / Stall Information
+    # ---------------------------------
+
+    info1, info2 = st.columns(2)
+
+    with info1:
+        st.success(f" Best Angle of Attack: {best_aoa}°")
+
+    with info2:
+        if stall_aoa:
+            st.warning(f"⚠ Stall starts at ~{stall_aoa}°")
+        else:
+            st.info("No stall detected in analysed range")
+
+    # ---------------------------------
+    # Report Section
+    # ---------------------------------
+
+    st.markdown("---")
+
+    st.subheader(" Generate Engineering Report")
+
+    st.write(
+        """
+        Download a complete aerodynamic report containing:
+
+        • Airfoil Details  
+        • Lift Prediction  
+        • Drag Prediction  
+        • CL/CD Ratio  
+        • Best Angle of Attack  
+        • Stall Information
+        """
+    )
+
+    if st.button(" Generate PDF Report"):
+
         file = generate_pdf(
             name=name,
             cl=lift,
@@ -219,10 +334,12 @@ with tab2:
         )
 
         with open(file, "rb") as f:
+
             st.download_button(
-                "⬇ Download Report",
-                f,
-                file_name="airfoil_report.pdf"
+                label="⬇ Download Report",
+                data=f,
+                file_name="airfoil_report.pdf",
+                mime="application/pdf"
             )
 
         st.success("Report generated successfully!")
