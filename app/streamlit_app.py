@@ -185,7 +185,7 @@ with tab1:
 
 with tab2:
 
-    st.subheader("📈 Aerodynamic Performance Analysis (0–10° AOA)")
+    st.subheader(" Aerodynamic Performance Analysis (0–10° AOA)")
 
     # ---------------------------------
     # Summary Metrics
