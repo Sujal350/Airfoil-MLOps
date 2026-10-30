@@ -2,7 +2,8 @@
 
 ## Project Overview
 
-Streamlit app Airfoil MLOps: https://airfoil-mlops-j3svxmxldh2fj8hajz3oc3.streamlit.app/
+Streamlit app Airfoil MLOps: https://airfoil-mlops-j3svxmxldh2fj8hajz3oc3.streamlit.app/  
+
 Demo Link : https://drive.google.com/file/d/1G28S7S1GZRFZS_S5mDip9jG4ImEGgGOE/view
 
 
